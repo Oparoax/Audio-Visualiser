@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System;
+using static AudioManipulator;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public abstract class AudioTerrainMap : MonoBehaviour
@@ -10,18 +12,17 @@ public abstract class AudioTerrainMap : MonoBehaviour
     public float barScale;
     //Mesh to be manipulated
     public Mesh mesh;
-
+    //Material on the object
     public Material material;
     //Vector3 array of vertices values
     public Vector3[] vertices;
     //Integer array of triangles values
     protected int[] triangles;
 
-
-    
+    protected AudioManipulator audioManipulator;
 
     // Start is called before the first frame update
-    protected void Start()
+    void Start()
     {
         //Initialises new mesh
         mesh = new Mesh();
@@ -29,11 +30,10 @@ public abstract class AudioTerrainMap : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
         //Generate method to create the grid
         Generate();
-
-        material.SetColor("_emission", AudioManipulator.newColour);
-        OnColourChange.AddListener(delegate { SetColour(); });
+        audioManipulator = FindObjectOfType<AudioManipulator>();
+        audioManipulator.OnColourChanged.AddListener(SetColour);
     }
-    protected void Update()
+    void Update()
     {
         //UpdateMesh method to update the mesh each frame
         var audioReader = FindObjectOfType<AudioReader>();
@@ -42,16 +42,24 @@ public abstract class AudioTerrainMap : MonoBehaviour
         //Start update mesh method
         UpdateMesh();
     }
-    //Method for generating the mesh is abstract so it can be used to make lots of different meshes
+
+    /// <summary>
+    /// Method for generating the mesh is abstract so it can be used to make lots of different meshes
+    /// </summary>
     protected abstract void Generate();
-    //Method for updating mesh is abstract as this too is used for different mesh types
+
+    /// <summary>
+    /// Method for updating mesh is abstract as this too is used for different mesh types
+    /// </summary>
     protected abstract void UpdateMesh();
 
     /// <summary>
     /// Method for creating the triangles for the meshes
     /// </summary>
-    protected virtual void CreateTriangles()
+    protected virtual int[] CreateTriangles(int arraySize)
     {
+        //Sets size of triangles array
+        triangles = new int[arraySize];
         //Intialises interators
         int vertex = 0;
         int tris = 0;
@@ -75,11 +83,12 @@ public abstract class AudioTerrainMap : MonoBehaviour
             vertex++;
 
         }
+        return triangles;
     }
 
-    void SetColour()
+    void SetColour(ColourChangedArgs args)
     {
-        material.SetColor("_emission", AudioManipulator.newColour);
+        material.SetColor("_emission", args.colour);
     }
     //Draws gizmos in scene view for debugging
 
