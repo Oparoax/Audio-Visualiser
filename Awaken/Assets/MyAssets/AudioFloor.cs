@@ -11,6 +11,12 @@ namespace Assets.MyAssets
         //Defines depth of vertices to pass into audioHistory function
         public static int depthOfFloor;
 
+        public float AmpMin;
+
+        public int Number_Of_Bands_Displayed;
+
+        int SizeOfArray;
+
         /// <summary>
         /// Class variable
         /// </summary>
@@ -38,13 +44,13 @@ namespace Assets.MyAssets
                 for (int x = 0; x <= xSize; x++, i++)
                 {
                     //Applies the amplitude onto the vertices y value
-                    vertices[i] = new Vector3(x, AudioReader.Amplitude, z);
+                    vertices[i] = new Vector3(x, 0, z);
                 }
             }
             //Sets size of triangles array
-            triangles = new int[xSize * zSize * 6];
+            SizeOfArray = xSize * zSize * 6;
             //Calls create triangles method in AudioTerrainMap
-            CreateTriangles();
+            triangles = CreateTriangles(SizeOfArray);
             //Applies calculated vertices and teriangles to mesh component and calculates normals
             mesh.vertices = vertices;
             mesh.triangles = triangles;
@@ -76,24 +82,17 @@ namespace Assets.MyAssets
         /// </summary>
         void applyFreqOverTime()
         {
-            //Loops around each row of vertices
-            for (int i = 0, iMax = vertices.Length - 1, z = 0; z <= zSize; z++)
+            //
+            for (int z = 0, i = 0; z <= zSize; z++)
             {
-                //Loops around vertices in row
-                for (int x = 0; x <= xSize; x++, i++, iMax--)
+                for (int bandOfAudio = 0; bandOfAudio <= Number_Of_Bands_Displayed; bandOfAudio++,i++)
                 {
-                    //Checks if current band exists
-                    if (audioReader.audioBands[z] != null)
-                    {
-                        //Applies change on mesh vertices by applying the frequency multiplied by a scale value
-                        vertices[i].y = audioReader.audioBands[z].frequencies[x] * barScale;
-                        vertices[iMax].y = audioReader.audioBands[z].frequencies[x] * barScale;
-                        
-                    }
+                    vertices[i].y = audioReader.audioBands[z].frequencies[bandOfAudio] * barScale;
                 }
             }
+
             //Calls create triangles method in AudioTerrainMap
-            CreateTriangles();
+            CreateTriangles(SizeOfArray);
             //Applies calculated vertices and teriangles to mesh component and calculates normals
             mesh.vertices = vertices;
             mesh.triangles = triangles;
