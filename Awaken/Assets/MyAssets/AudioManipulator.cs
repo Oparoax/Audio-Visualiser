@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -51,9 +52,11 @@ public class AudioManipulator : MonoBehaviour
     //Bool to determine if the color has changed
     private bool hasChangedColour = false;
     //New colour to apply to the shader
-    public static Color newColour = new Color(0,0,0,255);
+    public static Color newColour;
 
-    public static UnityEvent OnColourChange;
+    public UnityEvent<ColourChangedArgs> OnColourChanged;
+
+    public class ColourChangedArgs : EventArgs { public Color colour;}
 
     /// <summary>
     /// Sets the Amplitude & Frequency to their starting values
@@ -117,12 +120,12 @@ public class AudioManipulator : MonoBehaviour
     private void ChangeColor()
     {
         //Generates random colour from array
-        newColour = vibrantColours[Random.Range(0, vibrantColours.Length -1)];
+        newColour = vibrantColours[UnityEngine.Random.Range(0, vibrantColours.Length -1)];
         //Sets emission colour propertie on shader to new colour
         rippleMat.SetColor("_emission", newColour);
         //Sets boolean to true so it isn't repeated
         hasChangedColour = true;
 
-        OnColourChange?.Invoke();
+        OnColourChanged?.Invoke(new ColourChangedArgs {colour = newColour});
     }
 }
