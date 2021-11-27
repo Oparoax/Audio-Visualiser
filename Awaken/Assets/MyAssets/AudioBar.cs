@@ -27,10 +27,10 @@ namespace Assets.MyAssets
                 }
             }
             //Sets size of triangles array
-            triangles = new int[xSize * zSize * 6];
+            int SizeOfArray = xSize * zSize * 6;
 
             //Calls create triangles method in AudioTerrainMap
-            CreateTriangles();
+            triangles = CreateTriangles(SizeOfArray);
             //Applies stored vertices and triangles to the mesh component and applies normals
             mesh.vertices = vertices;
             mesh.triangles = triangles;
