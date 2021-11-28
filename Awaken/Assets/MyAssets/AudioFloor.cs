@@ -9,12 +9,10 @@ namespace Assets.MyAssets
     public class AudioFloor : AudioTerrainMap
     {
         //Defines depth of vertices to pass into audioHistory function
-        public static int depthOfFloor;
-
-        public float AmpMin;
-
-        public int Number_Of_Bands_Displayed;
-
+        public static int requiredAudioHistory;
+        //Which frequency bands are displayed on the floor
+        [Range(1,7)] [SerializeField]public int Number_Of_Bands_Displayed;
+        //Size of the triangles array to be parsed into the method
         int SizeOfArray;
 
         /// <summary>
@@ -33,10 +31,22 @@ namespace Assets.MyAssets
         /// </summary>
         protected override void Generate()
         {
-            //Sets deptOfFloor to define the size of the array in Set History
-            depthOfFloor = zSize + 1;
             //Sets size of vertices array
             vertices = new Vector3[(xSize + 1)* (zSize + 1)];
+
+            int vertRemainder = 0;
+            //Sets deptOfFloor to define the size of the array in Set History
+            //Checks for how far back in history we need to store by checking the size of the vertice array against the 
+            if (vertices.Length % Number_Of_Bands_Displayed == 0)
+            {
+                requiredAudioHistory = vertices.Length / Number_Of_Bands_Displayed;
+            }
+            else
+            {
+                vertRemainder = vertices.Length % Number_Of_Bands_Displayed;
+                requiredAudioHistory = Mathf.RoundToInt(vertices.Length + vertRemainder / Number_Of_Bands_Displayed);
+            }
+            
             //Loops through z values
             for (int i = 0, z = 0; z <= zSize; z++)
             {
@@ -82,12 +92,14 @@ namespace Assets.MyAssets
         /// </summary>
         void applyFreqOverTime()
         {
-            //
-            for (int z = 0, i = 0; z <= zSize; z++)
+            //Loops threw the meshes depth
+            for (int i = 0, previousBand = 0; i < vertices.Length; previousBand++)
             {
-                for (int bandOfAudio = 0; bandOfAudio <= Number_Of_Bands_Displayed; bandOfAudio++,i++)
+                //Loops through vertices and applys a frequency to the y value
+                for (int bandOfAudio = 0; i < vertices.Length && bandOfAudio < Number_Of_Bands_Displayed; bandOfAudio++, i++)
                 {
-                    vertices[i].y = audioReader.audioBands[z].frequencies[bandOfAudio] * barScale;
+                    //
+                    vertices[i].y = audioReader.audioBands[previousBand].frequencies[bandOfAudio] * barScale;
                 }
             }
 
