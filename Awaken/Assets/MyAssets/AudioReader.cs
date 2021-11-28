@@ -13,7 +13,6 @@ public class AudioReader : MonoBehaviour
     float[] samples = new float[512];
     //Float array to store all the 8 sample bands
     float[] freqBand = new float[8];
-
     //Float array to compare to, to buffer the value when the amplitude decreases
     float[] bandBuffer = new float[8];
     //Band buffer decrease values
@@ -24,6 +23,7 @@ public class AudioReader : MonoBehaviour
     public static float[] audioBand = new float[8];
     //Float array to store more usable values for buffered frequency
     public static float[] audioBandBuffer = new float[8];
+
     //Floats to store the average amplitude of unbuffered and buffered audio
     public static float Amplitude, AmplitudeBuffer;
     //Highest Amplitude reached
@@ -36,7 +36,7 @@ public class AudioReader : MonoBehaviour
         //Retrieves audio source component
         audioSource = GetComponent<AudioSource>();
         //Intialises array
-        audioBands = new AudioBand[AudioFloor.depthOfFloor];
+        audioBands = new AudioBand[AudioFloor.requiredAudioHistory];
     }
 
     private void Update()
@@ -76,10 +76,12 @@ public class AudioReader : MonoBehaviour
         Amplitude = currentAmplitude / AmplitudeHighest;
         AmplitudeBuffer = currentAmplitudeBuffer / AmplitudeHighest;
     }
+
     /// <summary>
     /// Sets values of each band to be in usable range i.e between 0 & 1
     /// </summary>
     void CreateAudioBands()
+    //Sets values of each band to be in usable range i.e between 0 & 1
     {
         //Loops through each band
         for (int i = 0; i < 8; i++)
@@ -143,12 +145,13 @@ public class AudioReader : MonoBehaviour
             float average = 0;
             //Sample bands are not even size and get exponentially bigger
             int sampleCount = (int)Mathf.Pow(2, i) * 2;
-
+            
             if (i == 7)
             {
                 //Completes full frequency range
                 sampleCount += 2;
             }
+           
             //Loop to generate avg of all frequencies in band
             for (int j = 0; j < sampleCount; j++)
             {
@@ -164,12 +167,15 @@ public class AudioReader : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Supplys an array with a set amount of previous frequencies across all 8 bands
+    /// </summary>
     public void SetAudioHistory()
     {
         //Defines size of array
-        audioBands = new AudioBand[AudioFloor.depthOfFloor];
+        audioBands = new AudioBand[AudioFloor.requiredAudioHistory];
         //First array in array
-        for (int audioSet = 0; audioSet < AudioFloor.depthOfFloor; audioSet++)
+        for (int audioSet = 0; audioSet < AudioFloor.requiredAudioHistory; audioSet++)
         {
             //First item in array
             for (int band = 0; band < audioBand.Length; band++)
