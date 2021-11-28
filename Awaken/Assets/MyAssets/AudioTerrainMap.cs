@@ -18,7 +18,7 @@ public abstract class AudioTerrainMap : MonoBehaviour
     public Vector3[] vertices;
     //Integer array of triangles values
     protected int[] triangles;
-
+    //Variable for AudioManipulator Class
     protected AudioManipulator audioManipulator;
 
     // Start is called before the first frame update
@@ -30,7 +30,9 @@ public abstract class AudioTerrainMap : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
         //Generate method to create the grid
         Generate();
+        //Defines audioManipulator
         audioManipulator = FindObjectOfType<AudioManipulator>();
+        //Adds listener to colour change event to change the mesh emission colour
         audioManipulator.OnColourChanged.AddListener(SetColour);
     }
     void Update()
@@ -86,21 +88,13 @@ public abstract class AudioTerrainMap : MonoBehaviour
         return triangles;
     }
 
+    /// <summary>
+    /// Sets emission colour of material to the colour on the event
+    /// </summary>
+    /// <param name="args">Colour of shader when event triggered</param>
     void SetColour(ColourChangedArgs args)
     {
+        //Sets material's emission colour to colour sent by event
         material.SetColor("_emission", args.colour);
     }
-    //Draws gizmos in scene view for debugging
-
-    //void OnDrawGizmos()
-    //{
-    //    //Checks if any vertices exist
-    //    if (vertices == null) return;
-    //    //Loops through all vertices in array
-    //    for (int i = 0; i < vertices.Length; i++)
-    //    {
-    //        //Draws sphere on each gizmo
-    //        Gizmos.DrawSphere(vertices[i], .1f);
-    //    }
-    //}
 }
