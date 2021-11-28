@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 public class AudioManipulator : MonoBehaviour
 {
+    [Header("Audio Buffer")]
     //Bool for which data stream to use
     public bool useBuffer;
 
@@ -32,7 +33,7 @@ public class AudioManipulator : MonoBehaviour
     public float freqScaleMultiplier;
     //The initial value for frequency on startup
     public float startFreq;
-
+    [Space]
     [Header("Frequency Band")]
     [Tooltip("Please select a band 1-8 to represent")]
     //Band selector
@@ -41,7 +42,7 @@ public class AudioManipulator : MonoBehaviour
     private float chosenStream;
     //Array placeholder to access the chosen data stream
     private float[] chosenArray;
-
+    [Space]
     [Header("Colour Change settings")]
     //Bool for whether colour is changed
     public bool changeColour;
@@ -53,9 +54,12 @@ public class AudioManipulator : MonoBehaviour
     private bool hasChangedColour = false;
     //New colour to apply to the shader
     public static Color newColour;
-
+    //Unity event to detect when colour changes
     public UnityEvent<ColourChangedArgs> OnColourChanged;
 
+    /// <summary>
+    /// Colour change class to handle the colour change event
+    /// </summary>
     public class ColourChangedArgs : EventArgs { public Color colour;}
 
     /// <summary>
@@ -69,7 +73,6 @@ public class AudioManipulator : MonoBehaviour
         rippleMat.SetFloat("_amplitude", startAmp);
     }
 
-
     /// <summary>
     /// Applies transformation data/manipulation of the shader
     /// </summary>
@@ -82,7 +85,7 @@ public class AudioManipulator : MonoBehaviour
             chosenStream = AudioReader.Amplitude;
             chosenArray = AudioReader.audioBand;
         }
-        if (!useBuffer)
+        else
         {
             //Buffered audio stream
             chosenStream = AudioReader.AmplitudeBuffer;
@@ -111,7 +114,6 @@ public class AudioManipulator : MonoBehaviour
             else hasChangedColour = false;
         }
         
-
     }
 
     /// <summary>
@@ -125,7 +127,7 @@ public class AudioManipulator : MonoBehaviour
         rippleMat.SetColor("_emission", newColour);
         //Sets boolean to true so it isn't repeated
         hasChangedColour = true;
-
+        //Colour change event fired to change colour of other meshes/shaders
         OnColourChanged?.Invoke(new ColourChangedArgs {colour = newColour});
     }
 }
