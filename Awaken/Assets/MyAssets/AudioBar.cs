@@ -9,6 +9,7 @@ namespace Assets.MyAssets
 {
     public class AudioBar : AudioTerrainMap
     {
+
         /// <summary>
         /// Creates the first instance of the mesh to be manipulated in UpdateMesh
         /// </summary>
