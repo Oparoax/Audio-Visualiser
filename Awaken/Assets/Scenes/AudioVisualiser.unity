@@ -656,7 +656,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 78503933bf2f12048ad7bba2bb41e798, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 129d335d4cdb2c846b979da09cd56d7d, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.8
   m_Pitch: 1
@@ -1091,7 +1091,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1685280650}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: da678981e82f9b84e958de79859f975f, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: 621393d51f2ee9541a01f7fc8c6e36e3, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -1165,13 +1165,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSize: 7
   ySize: 0
-  zSize: 50
+  zSize: 49
   barScale: 2
   mesh: {fileID: 0}
   material: {fileID: 2100000, guid: 2cc2029b4f297754aaa15ce6ea24e0e3, type: 2}
   vertices: []
-  AmpMin: 1.1
-  Number_Of_Bands_Displayed: 4
+  Number_Of_Bands_Displayed: 3
 --- !u!23 &1823151039
 MeshRenderer:
   m_ObjectHideFlags: 0
